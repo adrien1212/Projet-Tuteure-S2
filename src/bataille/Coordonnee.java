@@ -1,66 +1,67 @@
 /*
- * Coordonnee.java                                                  14 mai 2019
+ * Coordonnee.java                                                  16 mai 2019
  * IUT info1 2018-2019 groupe 1, aucun droits : ni copyright ni copyleft 
  */
 package bataille;
 
 /**
- * Créer des coordonnées défini par un x, un y
+ * TODO commenter les responsabilités de cette classe
  * @author Groupe projet
  */
 public class Coordonnee {
 
-    /** abscisse de la coordonnée */
+    /** Abscisse de la coordonnée */
     private int x;
     
-    /** ordonnée de la coordonnée */
+    /** Ordonnée de la coordonnée */
     private int y;
     
-    /** indice de la coordonnée (utilisé pour sauver) */
+    /** Indice de la coordonnée dans la zone */
     private int indiceCoord;
     
-    /** indice du bateau présent sur cette coordonnée (les zones du bateau) */
-    private int indiceBateau;
-    
-    /** indique si la coordonnée à reçu un tir */
+    /** Indique si la coordonnée est touchée */
     private boolean touche;
     
-    /** indique si la coordonnée à un bateau présent */
+    /** Indique si la coordonnée contient un bateau */
     private boolean contientBateau;
     
-    /** indique si le bateau présent est coulé */
-    private boolean coule;
+    /** Indique si le bateau présent sur la coordonnée est coulé */
+    private boolean bateauCoule;
     
+    /** Indice du bateau de la flotte */
+    private int indiceBateau;
     
     
     /**
-     * Créer une coordonnée par défaut (pour l'application)
-     * @param x abscisse de la coordonnée
-     * @param y ordonnée de la coordonnée
-     * @param indiceCoord 
-     */
-    public Coordonnee(int x, int y, int indiceCoord) {
-        this.x = x;
-        this.y = y;
-        this.indiceCoord = indiceCoord;
-        this.indiceBateau = -1;
-        this.touche = false;
-        this.contientBateau = false;
-        this.coule = false;
-    }
-    
-    /**
-     * Créer une coordonnée pour le passage de valeur
+     * Construit une coordonnée défini par un x et un y
      * @param x abscisse de la coordonnée
      * @param y ordonnée de la coordonnée
      */
     public Coordonnee(int x, int y) {
+        verifCoordonnée(x, y);
         this.x = x;
         this.y = y;
+        this.indiceCoord = y * Zone.tailleDefaut + x;
     }
+
+    /**
+     * Construit une coordonné avec l'indice du bateau et défini par un x et un y 
+     * @param x abscisse de la coordonnée
+     * @param y ordonnée de la coordonnée
+     * @param indiceBateau indice du bateau dans la collection de flotte
+     * @param contientBateau indique si la coordonnée contient un bateau
+     */
+    public Coordonnee(int x, int y, int indiceBateau, boolean contientBateau) {
+        verifCoordonnée(x, y);
+        this.x = x;
+        this.y = y;
+        this.indiceCoord = y * Zone.tailleDefaut + x;
+        this.indiceBateau = indiceBateau;
+        this.contientBateau = contientBateau;
+    }
+
     
-
-
+    
     /**
      * @return valeur de x
      */
@@ -83,33 +84,19 @@ public class Coordonnee {
     }
 
     /**
-     * @return valeur de idBateau
-     */
-    public int getIndiceBateau() {
-        return indiceBateau;
-    }
-
-    /**
-     * @param indiceBateau nouvelle valeur de indiceBateau
-     */
-    public void setIndiceBateau(int indiceBateau) {
-        this.indiceBateau = indiceBateau;
-    }
-   
-    /**
      * @return valeur de touche
      */
     public boolean isTouche() {
         return touche;
     }
-    
+
     /**
      * @param touche nouvelle valeur de touche
      */
     public void setTouche(boolean touche) {
         this.touche = touche;
     }
-
+    
     /**
      * @return valeur de contientBateau
      */
@@ -123,19 +110,26 @@ public class Coordonnee {
     public void setContientBateau(boolean contientBateau) {
         this.contientBateau = contientBateau;
     }
-    
+
     /**
-     * @return valeur de coule
+     * @return valeur de bateauCoule
      */
-    public boolean isCoule() {
-        return coule;
+    public boolean isBateauCoule() {
+        return bateauCoule;
     }
 
     /**
-     * @param coule nouvelle valeur de coule
+     * @param bateauCoule nouvelle valeur de bateauCoule
      */
-    public void setCoule(boolean coule) {
-        this.coule = coule;
+    public void setBateauCoule(boolean bateauCoule) {
+        this.bateauCoule = bateauCoule;
+    }
+
+    /**
+     * @return valeur de indiceBateau
+     */
+    public int getIndiceBateau() {
+        return indiceBateau;
     }
 
 
@@ -145,6 +139,34 @@ public class Coordonnee {
      */
     @Override
     public String toString() {
-        return "[" + x + "," + y + "]";
-    }    
+        return "(" + x + "," + y + ")";
+    }
+    
+    
+    
+    /**
+     * Vérifie si les abscisses et ordonnée sont dans la zone
+     * @param x abscisse de la coordonnée à tester
+     * @param y ordonnée de la coordonnée à tester
+     * @throws IllegalArgumentException si abscisse ou ordonnée invalide
+     */
+    private static void verifCoordonnée(int x, int y) 
+        throws IllegalArgumentException {
+        
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException("Coordonnée négative");
+        } else if (Zone.tailleDefaut < x || Zone.tailleDefaut < y) {
+            throw new IllegalArgumentException("Coordonné en dehors");
+        }
+    }
+
+    /**
+     * Compare deux coordonnées
+     * @param aComparer coordonnées à comparer
+     * @return vrai si coordonnées égales
+     */
+    public boolean coordonneesEgales(Coordonnee aComparer) {
+        return this.getX() == aComparer.getX() 
+            && this.getY() == aComparer.getY();
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Bateau.java                                                  14 mai 2019
+ * Bateau.java                                                  16 mai 2019
  * IUT info1 2018-2019 groupe 1, aucun droits : ni copyright ni copyleft 
  */
 package bataille;
@@ -7,88 +7,52 @@ package bataille;
 import java.util.ArrayList;
 
 /**
- * Créer des bateaux
+ * TODO commenter les responsabilités de cette classe
  * @author Groupe projet
+ *
  */
 public class Bateau extends Zone {
+
+    /** Taille du bateau (équivaut à tailleHorizontale ou tailleVerticale) */
+    private int tailleBateau;
     
-    /** Taille du bateau (équivaut à la longueur ou la largeur) */
-    private int taille;
-    
-    /** indique si le bateau est coulé */
-    private boolean coule;
-    
-    /** zone d'abordage du bateau */
-    private Zone abordage;
-    
-    /** indice du bateau dans la flotte */
+    /** Indice du bateau dans la collection de la flotte */
     private int indiceBateau;
-
-    
     
     /**
-     * Construit un bateau à une place précisé
-     * @param longueur longueur du bateau (axe x)
-     * @param largeur largeur du bateau (axe y)
-     * @param indiceBateau indice du bateau dans la flotte
-     * @param coordDepart coordonnée de départ où placer le bateau
+     * Construit un bateau à partir d'une coordonnée de départ et d'arrivée
+     * @param coordDepart coordonné de départ du bateau
+     * @param coordArrivee coordonné d'arrivé du bateau
+     * @param indiceBateau indice du bateau dans la collection de flotte
+     * @param zoneContenant zone qui contiendra le bateau
      */
-    public Bateau(int longueur, int largeur, int indiceBateau,
-        Coordonnee coordDepart) {
-        
-        super(longueur, largeur, indiceBateau, coordDepart);
+    public Bateau(Coordonnee coordDepart, Coordonnee coordArrivee, int indiceBateau,
+                  Zone zoneContenant) {
+        super(coordDepart, coordArrivee);
+        this.tailleBateau = getTailleHorizontale() == 1 ? getTailleVerticale() :
+                                                          getTailleHorizontale();
         this.indiceBateau = indiceBateau;
-        this.coule = false;
-        this.abordage = new Zone(this);
+        /* ajout de la zone d'abordage à la zone du bateau */
+        this.getZoneContenu().add(this.creerZoneAbordage(zoneContenant));
     }
+   
     
-    /**
-     * TODO commenter l'état initial défini
-     * @param longueur
-     * @param largeur
-     * @param indiceBateau
-     */
-    public Bateau(int longueur, int largeur, int indiceBateau) {
-        super(longueur, largeur);
-        this.indiceBateau = indiceBateau;
-    }
-    
-    /**
-     * Construit un bateau pour stocker les valeurs
-     * @param taille taille du bateau
-     */
-    public Bateau(int taille) {
-        this.taille = taille;
-    }
-
-    
-    
-    /**
-     * @return valeur de taille
-     */
-    public int getTaille() {
-        return taille;
-    }
 
     /**
-     * @return valeur de coule
+     * Construit un bateau pour le stockage de la taille
+     * @param tailleBateau
      */
-    public boolean isCoule() {
-        return coule;
+    public Bateau(int tailleBateau) {
+        this.tailleBateau = tailleBateau;
     }
 
-    /**
-     * @param coule nouvelle valeur de coule
-     */
-    public void setCoule(boolean coule) {
-        this.coule = coule;
-    }
+
 
     /**
-     * @return valeur de abordage
+     * @return valeur de tailleBateau
      */
-    public Zone getAbordage() {
-        return abordage;
+    public int getTailleBateau() {
+        return tailleBateau;
     }
 
     /**
@@ -103,103 +67,49 @@ public class Bateau extends Zone {
      */
     @Override
     public String toString() {
-        return "Bateau [coule=" + coule + ", abordage=" + abordage 
-             + ", indiceBateau=" + indiceBateau + "]";
+        return "Bateau [tailleBateau = " + tailleBateau
+             + ", zoneBateau = " + getZoneCoord()
+             + ", zoneAbordage = " + getZoneContenu() + "]";
     }
-    
-    
-    
-    /**
-     * Vérifie si toutes les coordonnées du bateau sont touchées et change 
-     * l'attribut coule du bateau
-     * @return vrai si le bateau est coulé
-     */
-    public boolean estCoule() {
-        ArrayList<Coordonnee> zoneBateau = this.getZone();
 
-        int indice;
-        for (indice = 0; indice < zoneBateau.size() 
-                      && zoneBateau.get(indice).isTouche(); indice++);
-        
-        if (indice == zoneBateau.size()) {
-            this.setCoule(true);
-            for (Coordonnee coordAChanger : zoneBateau) {
-                coordAChanger.setCoule(true);
-            }
-            return true;
+    
+    
+    /**
+     * Créer la zone d'abordage
+     * @param zoneContenant zone qui contient la zone d'abordage (zone jeu)
+     * @return la zone d'abordage du bateau
+     */
+    public Zone creerZoneAbordage(Zone zoneContenant) {
+        Coordonnee coordDepartZone;  // coordonnée de départ de la zone 
+        Coordonnee coordArriveeZone; // coordonnée d'arrivée de la zone
+
+        int x, // abscisse de la coordonnée de la nouvelle zone
+            y; // ordonnée de la coordonnée de la nouvelle zone
+    
+        /* Calcul de la coordonnée de départ */
+        x = this.getCoordDepart().getX();
+        if (x != 0) {
+            x--;
+        }
+        y = this.getCoordDepart().getY();
+        if (y != 0) {
+            y--;
         }
         
-        return false;
-    }
-    
-    
-    
-    
-    /**
-     * Construit un bateau à partir d'un autre bateau (bateau de stockage)
-     * @param coordDepart coordonnée de départ du bateau à construire
-     * @return le bateau créer
-     */
-    public Bateau construireBateau(Coordonnee coordDepart) {
-        return new Bateau(getLongueur(), getLargeur(), getIndiceBateau(), 
-                          coordDepart);
-    }
-    
-    /**
-     * Construit un bateau à partir d'éléments donnés
-     * @param taille taille du bateau
-     * @param vertical indique si le bateau est en position vertical
-     * @param indice indice du bateau dans la flotte
-     * @return le bateau créer
-     */
-    public static Bateau construireBateau(int taille, boolean vertical, 
-                                          int indice) {
-        if (vertical) {
-            return new Bateau(1, taille, indice);
-        } else {
-            return new Bateau(taille, 1, indice);
+        coordDepartZone = new Coordonnee(x, y);
+        
+        /* Calcul de la coordonnée d'arrivée */
+        x = this.getCoordArrivee().getX();
+        if (x != zoneContenant.getTailleHorizontale()-1) {
+            x++;
         }
-    }
-    
-    /**
-     * Vérifie si le bateau peut être placer
-     * @param aPlacer 
-     * @param coordDepartBateau coordonnée où essayer de placer le bateau
-     * @return vrai si le placement est possible
-     */
-    public static boolean placerBateau(Bateau aPlacer, 
-                                       Coordonnee coordDepartBateau) {
-        try {
-            @SuppressWarnings("unused")
-            Bateau aTester = new Bateau(aPlacer.getLongueur(), 
-                                        aPlacer.getLargeur(), 
-                                        aPlacer.getIndiceBateau(), 
-                                        coordDepartBateau);
-            if (aTester.collision()) {
-                return false;
-            }
-            
-        } catch (IllegalArgumentException eZone) {
-            return false;
+        y = this.getCoordArrivee().getY();
+        if (y != zoneContenant.getTailleVerticale()-1) {
+            y++;
         }
+    
+        coordArriveeZone = new Coordonnee(x, y);
         
-        return true;
-    }
-    
-    
-    
-    
-    /**
-     * Détermine le nombre de case touché d'un bateau
-     * @return le nombre de case touché du bateau
-     */
-    public int nombreCaseTouche() {
-        ArrayList<Coordonnee> zoneBateau = this.getZone();       
-        int compteur;
-        
-        for(compteur = 0; compteur < zoneBateau.size() 
-                       && zoneBateau.get(compteur).isTouche() ; compteur++);
-        
-        return compteur;
+        return new Zone(coordDepartZone, coordArriveeZone);
     }
 }
