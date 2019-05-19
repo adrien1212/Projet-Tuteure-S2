@@ -67,22 +67,6 @@ public class Zone {
         this.zoneContenu = new ArrayList<Zone>();
     }
     
-//    /**
-//     * Construit une zone avec une coordonnée de départ 
-//     * et les tailles verticale et horizontale
-//     * @param coordDepart coordonnée où commence la zone
-//     * @param tailleHorizontale taille horizontale de la zone (axe x)
-//     * @param tailleVerticale taille verticale de la zone (axe y)
-//     */
-//    public Zone(Coordonnee coordDepart, 
-//                int tailleHorizontale, int tailleVerticale) {
-//        
-//        this.coordDepart = coordDepart;
-//        this.tailleHorizontale = tailleHorizontale;
-//        this.tailleVerticale = tailleVerticale;
-//        this.coordArrivee = this.calculCoordArrivee();
-//    }
-    
     
 
     /**
@@ -107,6 +91,13 @@ public class Zone {
     }
 
     /**
+     * @param tailleHorizontale nouvelle valeur de tailleHorizontale
+     */
+    public void setTailleHorizontale(int tailleHorizontale) {
+        this.tailleHorizontale = tailleHorizontale;
+    }
+
+    /**
      * @return valeur de tailleVerticale
      */
     public int getTailleVerticale() {
@@ -114,10 +105,17 @@ public class Zone {
     }
     
     /**
+     * @param tailleVerticale nouvelle valeur de tailleVerticale
+     */
+    public void setTailleVerticale(int tailleVerticale) {
+        this.tailleVerticale = tailleVerticale;
+    }
+    
+    /**
      * @return valeur de zoneCoord
      */
     public ArrayList<Coordonnee> getZoneCoord() {
-        return zoneCoord;
+        return this.zoneCoord;
     }
 
     /**
@@ -132,9 +130,10 @@ public class Zone {
      */
     @Override
     public String toString() {
-        return "Zone [coordDepart=" + coordDepart + ", coordArrivee=" + coordArrivee + ", tailleHorizontale="
-                + tailleHorizontale + ", tailleVerticale=" + tailleVerticale + ", zoneCoord=" + zoneCoord
-                + ", zoneContenu=" + zoneContenu + "]";
+        return "Zone [coordDepart=" + coordDepart 
+                 + ", coordArrivee=" + coordArrivee 
+                 + ", tailleHorizontale=" + tailleHorizontale 
+                 + ", tailleVerticale=" + tailleVerticale + "]";
     }
     
     
@@ -144,17 +143,20 @@ public class Zone {
      */
     public void afficherZone() {
         
-        int indiceCoords; // indice dans l'arrayList coordsInterressants
+        int indiceCoords;     // indice dans l'arrayList zoneCoord
+        Coordonnee aAfficher; // coordonnée à afficher
         
         StringBuilder zone = new StringBuilder(); // chaîne contenant le tableau
         
-        /* Récupère les coordonnées intéressantes c'est à dire les coordonnées 
-         * où il y a un bateau OU où il y a eu un tir
-         */
-        ArrayList<Coordonnee> collectionCoords = this.getZoneCoord();
+        /* récupération des coordonnées à afficher */
+        ArrayList<Coordonnee> coordAAfficher = this.getZoneCoord();
+        System.out.println("\nAvant tri : \n" + coordAAfficher);
+        trierCollecCoord(coordAAfficher);
+        System.out.println("\nApres tri : \n" + coordAAfficher);
 
         int numLigne; // numéro de la ligne de la zone
 
+        /* affichage des lettres (A = 0) */
         zone.append("\n   ");
         for (int indice = 0; indice < tailleHorizontale; indice++) {
             zone.append((char) ('A' + indice));
@@ -166,6 +168,7 @@ public class Zone {
         // afficher du tableau
         for (int i = 0; i < tailleHorizontale * tailleVerticale; i++) {
 
+            /* affichage des chiffres sur le coté (1 = 0) */
             if (i % tailleHorizontale == 0) {
                 zone.append("\n");
                 if (numLigne < 10) {
@@ -175,22 +178,24 @@ public class Zone {
                 numLigne++;
             }
             
-            /* État de la case */
+            System.out.println("indice : " + i + " , idcoord : " + coordAAfficher.get(indiceCoords).getIndiceCoord());
+            
+            /* récupération de la coordonnée */
             zone.append(' ');
-            if (collectionCoords.size() <= indiceCoords) {
+            if (coordAAfficher.size() == 0) {
                 zone.append('.');
-            } else if (i == collectionCoords.get(indiceCoords).getIndiceCoord()) {
-                if (collectionCoords.get(indiceCoords).isBateauCoule()) {
+            } else if (coordAAfficher.get(indiceCoords).getIndiceCoord() == i) {
+                aAfficher = coordAAfficher.get(indiceCoords);
+                if (aAfficher.isBateauCoule()) {
                     zone.append('X');
-                } else if(collectionCoords.get(indiceCoords).isContientBateau()) {
-                    zone.append('=');
-                } else if (collectionCoords.get(indiceCoords).isTouche() && 
-                          !collectionCoords.get(indiceCoords).isBateauCoule()){
+                } else if (aAfficher.isContientBateau() && aAfficher.isTouche()) {
                     zone.append('x');
-                } else if (collectionCoords.get(indiceCoords).isTouche()) {
+                } else if (aAfficher.isContientBateau()) {
+                    zone.append('=');
+                } else if (aAfficher.isTouche()) {
                     zone.append('o');
                 } else {
-                    zone.append('.');
+                    zone.append("NIQUE TOI");
                 }
                 indiceCoords++;
             } else {
@@ -203,19 +208,26 @@ public class Zone {
         System.out.println(zone.toString());
     }
     
-//    /**
-//     * Calcul et construit la case d'arrivée en fonction de la taille de la zone
-//     * @return la coordonnée d'arrivée 
-//     */
-//    private Coordonnee calculCoordArrivee() {
-//        int x; // abscisse de la coordonnée d'arrivée
-//        int y; // ordonnée de la coordonnée d'arrivé
-//        
-//        x = this.coordDepart.getX() + this.tailleHorizontale;
-//        y = this.coordDepart.getY() + this.tailleVerticale;
-//        
-//        return new Coordonnee(x, y);
-//    }
+
+    
+    /**
+     * TODO commenter le rôle de cette méthode
+     * @param aParcourir 
+     */
+    public static void trierCollecCoord(ArrayList<Coordonnee> aParcourir) {
+        Coordonnee aInserer; // Bateau à positionner à la bonne place
+        int j;               // parcours de boucle dans le sens inverse
+        
+        for (int i = 1; i < aParcourir.size(); i++) {
+            aInserer = aParcourir.get(i);
+            j = i;
+            while(j > 0 && aParcourir.get(j-1).getIndiceCoord() < aInserer.getIndiceCoord()) {
+                j--;
+            }
+            aParcourir.remove(i);
+            aParcourir.add(j, aInserer);
+        } 
+    }
     
     /**
      * Ajoute des coordonnées dans la collection zoneCoord (de this)
@@ -289,13 +301,17 @@ public class Zone {
     }  
     
     /**
-     * Vérifie si deux zones entrent en collision 
-     * @param zoneATester zone à vérifier
-     * @return vrai si collision entre les deux zones
+     * vérifie si deux zones entre en collision
+     * @param zoneAtTester zone a tester avec this
+     * @return vrai si collision entre deux zone
      */
-    public boolean collision(Zone zoneATester) {
-        Coordonnee caseA = this.getCoordDepart()
-        Coordonnee caseB = zoneATester.getCaseDepart();
+    public boolean collision(Zone zoneAtTester) {
+        /* récupération des zones pour les permuter */
+        Zone zoneA = this;
+        Zone zoneB = zoneAtTester;
+        
+        Coordonnee caseA = zoneA.getCoordDepart(); // case de départ de la zone A
+        Coordonnee caseB = zoneB.getCoordDepart(); // case de départ de la zone B
         Coordonnee tmp; // stockage pour permutation
 
         /* permutation */
@@ -303,13 +319,17 @@ public class Zone {
             tmp = caseA;
             caseA = caseB;
             caseB = tmp;
+            zoneA = zoneAtTester;
+            zoneB = this;
         }
 
-        if (caseB.getX() <= (caseA.getX() + zoneA.getLongueur())
-                && caseB.getY() <= (caseA.getY() + zoneA.getLargeur())) {
+        if (caseB.getX() <= (caseA.getX() + zoneA.getTailleHorizontale())
+                && caseB.getY() <= (caseA.getY() + zoneA.tailleVerticale)) {
             return true;
         }
 
         return false;
     }
+    
+
 }

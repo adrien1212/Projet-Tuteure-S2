@@ -5,6 +5,9 @@
 package tests;
 
 
+import java.util.ArrayList;
+
+import bataille.Bateau;
 import bataille.Coordonnee;
 import bataille.Zone;
 
@@ -29,9 +32,15 @@ public class testZone {
             new Coordonnee(0, 8),
             new Coordonnee(1, 9),
             new Coordonnee(2, 0),
-            new Coordonnee(9,9)// mettre taille defaut
+            new Coordonnee(9,9)      // mettre taille defaut
     };
     
+    /** Bateaux */
+    private static Bateau[] bateauPourTest = {
+        new Bateau(new Coordonnee(0, 0), new Coordonnee(3, 0), 0, zoneJeu),
+        new Bateau(new Coordonnee(8, 7), new Coordonnee(8, 7), 1, zoneJeu),
+        new Bateau(new Coordonnee(3, 2), new Coordonnee(3, 5), 2, zoneJeu),
+    };
     
 //    /**
 //     * Tester si une zone se crée correctement
@@ -137,6 +146,94 @@ public class testZone {
 //        System.out.println("Nb echecs horsZone " + nbEchecs);
 //  
 //    }
+//    
+//    
+//    /**
+//     * Test unitaire de ajouterCoordonnee
+//     */
+//    public static void testAjouterCoordonnee() {
+//        ArrayList<Coordonnee> zoneCoord2; // liste où seront ajouter les coordonnées
+//        
+//        /* Coordonnées à ajouter à la liste */
+//        
+//        
+//    }
+//    
+//    
+//    /** 
+//     * Test unitaire de ajouterCoordonnee(Bateau)
+//     */
+//    public static void testAjouterCoordonneeAvecBateau() {
+//        ArrayList<Coordonnee> zoneCoord; // liste où seront ajouter les coordonnées
+//        
+//        for (int i = 0; i < bateauPourTest.length; i++) {
+//            zoneCoord.ajouterCoordonnee(bateauPourTest[i].getZoneContenu());
+//        }
+//    }
+    
+   
+    /**
+     * Test visuel de getZoneCoord
+     * Retour valide = coordonnée bateau + coordonnée zoneAbordage
+     * si la zone est un bateau
+     */
+    public static void testGetZoneCoord() {
+        for (int i = 0; i < bateauPourTest.length; i++) {
+            System.out.println(bateauPourTest[i].getZoneCoord());
+            System.out.println(bateauPourTest[i].getZoneContenu().get(0));
+        }
+    }
+    
+    /**
+     * Test unitaire de collision
+     */
+    public static void testCollision() {
+        int nbEchecs;
+        
+        /* Coordonnée de départ des bateaux*/
+        Coordonnee[] coordDepart = {
+                new Coordonnee(5, 8),
+                new Coordonnee(5, 3),
+                new Coordonnee(5, 3),
+                new Coordonnee(3, 3),
+                new Coordonnee(3, 3),
+        };
+        
+        /* Coordonnée d'arrive des bateaux */
+        Coordonnee[] coordArrive = {
+                new Coordonnee(7, 8),
+                new Coordonnee(5, 6),
+                new Coordonnee(5, 7),
+                new Coordonnee(6, 3),
+                new Coordonnee(3, 5),
+        };
+
+
+        /* réculats attendus */
+        boolean[] resultatAttendu = {
+                false, true, true, true, true
+        };
+        
+        /* Placement d'un bateau de la zone de jeu*/
+        Bateau bateauPlace = new Bateau(new Coordonnee(4, 4), new Coordonnee(7, 4), 
+                0, zoneJeu);
+
+        zoneJeu.ajouterCoordonnee(bateauPlace); // ajout du bateau sur la zone de jeu
+
+
+        nbEchecs = 0;
+        /* On regarde si les nouveaux bateaux touchent le bateau déjà placé*/
+        for (int i = 0; i < coordDepart.length; i++) {
+            Bateau bAPlacer2 = new Bateau(coordDepart[i], coordArrive[i], i+1, zoneJeu);
+            
+            if (bAPlacer2.collision(bateauPlace) != resultatAttendu[i]) {
+                nbEchecs++;
+            }
+        }
+        System.out.println("Nombre d'echecs de Collision : " + nbEchecs);
+
+    }
+    
     
     
     /**
@@ -147,6 +244,9 @@ public class testZone {
         //testCreationZone();
         //testHorsZone(zoneJeu);
         //zoneJeu.afficherZone();
+        //testAjouterCoordonnee();
+        //testGetZoneCoord();
+        testCollision();
     }
 
 }

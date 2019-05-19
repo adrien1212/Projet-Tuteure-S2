@@ -4,11 +4,16 @@
  */
 package bataille;
 
+import java.util.ArrayList;
+
 /**
  * TODO commenter les responsabilités de cette classe
  * @author Groupe projet
  */
 public class Jeu {
+    
+    /** Coup joué par l'utilisateur */
+    public static ArrayList<Coordonnee> coupJoue;
 
     /**
      * Lancement de l'application
@@ -19,16 +24,35 @@ public class Jeu {
         Zone zoneJeu = new Zone();
         Flotte marine = new Flotte();
         
-        Bateau essai = new Bateau(new Coordonnee(1, 1), new Coordonnee(7, 1), 0, zoneJeu);
-        Bateau essai2 = new Bateau(new Coordonnee(0, 2), new Coordonnee(0, 5), 1, zoneJeu);
-        Bateau essai3 = new Bateau(new Coordonnee(9, 8), new Coordonnee(9, 9), 2, zoneJeu);
-       
-        marine.ajouterBateau(essai);
-        marine.ajouterBateau(essai2);
+        Bateau test0 = new Bateau(4);
+        Bateau test1 = new Bateau(5);
+        Bateau test2 = new Bateau(3);
         
-        System.out.print("ZONE JEU : " + zoneJeu.toString());
+        //test0 = test0.constuireBateau(new Coordonnee(0, 0), 0, true, zoneJeu);
+        //System.out.println(test0);
         
-        zoneJeu.ajouterFlotte(marine);
+        marine.ajouterBateau(test0);
+        marine.ajouterBateau(test1);
+        marine.ajouterBateau(test2);
+        
+        System.out.println("marine :\n");
+        for (Bateau aAfficher : marine.getCollectionBateau()) {
+            System.out.println(aAfficher);
+        }
+        System.out.println("\n");
+        
+        marine.placementBateauAlea(zoneJeu);
+        
+        System.out.println("marine :\n");
+        for (Bateau aAfficher : marine.getCollectionBateau()) {
+            System.out.println(aAfficher);
+        }
+        System.out.println("\n");
+            
+        for (Coordonnee coord : zoneJeu.getZoneCoord()) {
+            System.out.print(coord + "  ");
+        }
+        
         zoneJeu.afficherZone();
     }
 }

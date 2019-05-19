@@ -38,7 +38,7 @@ public class Coordonnee {
      * @param y ordonnée de la coordonnée
      */
     public Coordonnee(int x, int y) {
-        verifCoordonnée(x, y);
+        verifCoordonnee(x, y);
         this.x = x;
         this.y = y;
         this.indiceCoord = y * Zone.tailleDefaut + x;
@@ -52,7 +52,7 @@ public class Coordonnee {
      * @param contientBateau indique si la coordonnée contient un bateau
      */
     public Coordonnee(int x, int y, int indiceBateau, boolean contientBateau) {
-        verifCoordonnée(x, y);
+        verifCoordonnee(x, y);
         this.x = x;
         this.y = y;
         this.indiceCoord = y * Zone.tailleDefaut + x;
@@ -150,7 +150,7 @@ public class Coordonnee {
      * @param y ordonnée de la coordonnée à tester
      * @throws IllegalArgumentException si abscisse ou ordonnée invalide
      */
-    private static void verifCoordonnée(int x, int y) 
+    private static void verifCoordonnee(int x, int y) 
         throws IllegalArgumentException {
         
         if (x < 0 || y < 0) {
@@ -168,5 +168,19 @@ public class Coordonnee {
     public boolean coordonneesEgales(Coordonnee aComparer) {
         return this.getX() == aComparer.getX() 
             && this.getY() == aComparer.getY();
+    }
+    
+    /**
+     * Determine si un coup à déjà été joué à partir de la liste des coups
+     * @return vrai si le coup à déjà était joué
+     */
+    public boolean estDejaJoue() {
+        for (Coordonnee coup : Jeu.coupJoue) {
+            if (this.getX() == coup.getX() && this.getY() == coup.getY()) {
+                    return true;
+            }
+        }
+
+        return false;
     }
 }

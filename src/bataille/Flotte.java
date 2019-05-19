@@ -5,7 +5,6 @@
 package bataille;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * TODO commenter les responsabilités de cette classe
@@ -100,67 +99,103 @@ public class Flotte {
     }
     
     
-    /**
-     * Placement aléatoire des bateaux de la flotte sur la zone de jeu
-     * @param zoneJeu 
-     */
-    public void placementAleatoireBateau(Zone zoneJeu) {
-        int nombreAleatoire;    // nombre aléatoire qui donne le num de la case
-        
-        boolean placementOk; // dit si le placement d'un bateau est possible
-        
-        boolean bateauVertical; // direction verticale du bateau
-        
-        // liste des coordonnées où on ne peut pas placer de bateau
-        ArrayList<Coordonnee> coordZoneNonPlacable = new ArrayList<Coordonnee>();
-                           
-        ArrayList<Bateau> collecBateau = this.getCollectionBateau();
-        
-        // récupérer tous les bateaux de la flotte
-        for (int i = 0; i < collecBateau.size(); i++) {
-            placementOk = true;
-            
-            /* Direction du bateau */
-            nombreAleatoire = (int) (Math.random() * 100);
-            bateauVertical = nombreAleatoire < 50 ? true : false;
-            
-            do {
-                do {
-                    Random nbAlea = new Random();
-                    nombreAleatoire = nbAlea.nextInt(zoneJeu.getTailleHorizontale() * zoneJeu.getTailleVerticale());
-                    System.out.println(nombreAleatoire);
-                    if (coordZoneNonPlacable.contains(nombreAleatoire)) {
-                        placementOk = false;
-                    } else {
-                        placementOk = true;
-                    }
-                } while(!placementOk);
-                
-                placementOk = true;
-                if(collecBateau.get(i).collision(zoneJeu)) {
-                    placementOk = false;
-                }
-            } while (!placementOk);
-            
-            
+//    /**
+//     * Placement aléatoire des bateaux de la flotte sur la zone de jeu
+//     * @param zoneJeu 
+//     */
+//    public void placementAleatoireBateau(Zone zoneJeu) {
+//        int nombreAleatoire;    // nombre aléatoire qui donne le num de la case
+//        
+//        boolean placementOk; // dit si le placement d'un bateau est possible
+//        boolean nbAleatoireCorrect; //
+//        
+//        boolean bateauVertical; // direction verticale du bateau
+//        
+//        // liste des coordonnées où on ne peut pas placer de bateau
+//        ArrayList<Integer> coordZoneNonPlacable = new ArrayList<Integer>();
+//                         
+//        ArrayList<Bateau> collecBateau = this.getCollectionBateau();
+//        
+//        // récupérer tous les bateaux de la flotte
+//        for (int i = 0; i < collecBateau.size(); i++) {
+//            
+//            /* Direction du bateau */
+//            nombreAleatoire = (int) (Math.random() * 100);
+//            bateauVertical = nombreAleatoire < 50 ? true : false;
+//            
+//            do {
+//                placementOk = nbAleatoireCorrect = true;
+//                
+//                Random nbAlea = new Random();
+//                nombreAleatoire = nbAlea.nextInt(zoneJeu.getTailleHorizontale() * zoneJeu.getTailleVerticale());
+//                System.out.println(nombreAleatoire);
+//                if (coordZoneNonPlacable.contains(nombreAleatoire)) {
+//                    nbAleatoireCorrect = false;
+//                }
+//                
+//                if(collecBateau.get(i).collision(zoneJeu)) {
+//                    placementOk = false;
+//                }
+//                
+//            } while (!placementOk || !nbAleatoireCorrect);
+//            
+//            
 //            /* Construction du bateau sur la zone de jeu */
 //            Bateau bConstruit = new Bateau(collecBateau.get(i).getCoordDepart(),
-//                                           collecBateau.get(i).getCoordArrivee(),
-//                                           zoneJeu);
+//                                           collecBateau.get(i).getCoordArrivee(), 
+//                                           i, zoneJeu);
 //            
-            
-                    
-            /* Récupérer la zone d'abordage du bateau et l'ajouter aux coordonnées 
-             * non placables
-             */
-//            collecBateau.get(i).creerZoneAbordage(zoneJeu);
-//            for (Coordonnee coord : collecBateau.get(i).getZoneAbordage()) {
+//            /* Ajout des zones d'abordage du bateau aux coordonnées
+//             * non choisies au hasard
+//             */
+//            bConstruit.getZoneContenu().get(0); // récupération zone abordage
+//            for (Coordonnee coord : bConstruit.getZoneCoord()) {
 //                coordZoneNonPlacable.add(coord.getY() * zoneJeu.getTailleHorizontale() 
 //                                         + coord.getX());
 //            }
+//            
+//        }
+//        
+//    }
+    
+    /**
+     * Place si possible les bateaux de la flotte this aléatoirement sur la zone
+     * @param zoneOuPlacer zone où placer les bateaux
+     */
+    public void placementBateauAlea(Zone zoneOuPlacer) {
+        Bateau bateauAPlacer;   // bateau à placer
+        Coordonnee coordonneeDepart; // coordonnée de départ où placer le bateau
+        
+        boolean vertical; // indique si le bateau est en position vertical
+        
+        int x; // abscisse de la coordonnée de départ du bateau à placer
+        int y; // ordonnée de la coordonnée du départ bateau à placer
+        
+        for (int indice = 0; indice < collectionBateau.size(); indice++) {
+            bateauAPlacer = collectionBateau.get(indice);
             
+            /* boucle si placement impossible */
+            do {
+                /* génération aléatoire pour vertical */
+                vertical = Math.random() < 0.5;
+                
+                /* génération aléatoire du x et y */
+                x = (int) (Math.random() * Zone.tailleDefaut);
+                y = (int) (Math.random() * Zone.tailleDefaut);
+                coordonneeDepart = new Coordonnee(x, y);
+                
+            } while (!bateauAPlacer.placerBateau(coordonneeDepart, indice, 
+                                                 vertical, zoneOuPlacer));
+            
+            /* placement du bateau */
+            bateauAPlacer = bateauAPlacer.constuireBateau(coordonneeDepart, 
+                                                          indice, vertical, 
+                                                          zoneOuPlacer);
+            
+            this.getCollectionBateau().set(indice, bateauAPlacer); 
         }
         
+        zoneOuPlacer.ajouterFlotte(this);
     }
 }
 

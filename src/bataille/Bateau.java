@@ -4,8 +4,6 @@
  */
 package bataille;
 
-import java.util.ArrayList;
-
 /**
  * TODO commenter les responsabilités de cette classe
  * @author Groupe projet
@@ -19,6 +17,9 @@ public class Bateau extends Zone {
     /** Indice du bateau dans la collection de la flotte */
     private int indiceBateau;
     
+    /** Indique si le bateau est coulé */
+    private boolean coule;
+    
     /**
      * Construit un bateau à partir d'une coordonnée de départ et d'arrivée
      * @param coordDepart coordonné de départ du bateau
@@ -26,8 +27,8 @@ public class Bateau extends Zone {
      * @param indiceBateau indice du bateau dans la collection de flotte
      * @param zoneContenant zone qui contiendra le bateau
      */
-    public Bateau(Coordonnee coordDepart, Coordonnee coordArrivee, int indiceBateau,
-                  Zone zoneContenant) {
+    public Bateau(Coordonnee coordDepart, Coordonnee coordArrivee, 
+                  int indiceBateau, Zone zoneContenant) {
         super(coordDepart, coordArrivee);
         this.tailleBateau = getTailleHorizontale() == 1 ? getTailleVerticale() :
                                                           getTailleHorizontale();
@@ -44,6 +45,7 @@ public class Bateau extends Zone {
      */
     public Bateau(int tailleBateau) {
         this.tailleBateau = tailleBateau;
+        
     }
 
 
@@ -61,6 +63,22 @@ public class Bateau extends Zone {
     public int getIndiceBateau() {
         return indiceBateau;
     }
+
+    /**
+     * @return valeur de coule
+     */
+    public boolean isCoule() {
+        return coule;
+    }
+    
+    /**
+     * @param coule nouvelle valeur de coule
+     */
+    public void setCoule(boolean coule) {
+        this.coule = coule;
+    }
+
+
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
@@ -111,5 +129,83 @@ public class Bateau extends Zone {
         coordArriveeZone = new Coordonnee(x, y);
         
         return new Zone(coordDepartZone, coordArriveeZone);
+    }
+    
+    /**
+     * TODO commenter le rôle de cette méthode
+     * @param coordDepart coordonnée de départ du bateau
+     * @param taille taille du bateau
+     * @param vertical direction du bateau
+     * @return la coordonnée d'arrivé
+     */
+    //PUBLIC POUR TEST
+    public static Coordonnee calculCoordArrivee(Coordonnee coordDepart, 
+                                                 int taille, boolean vertical) {
+        
+        return vertical ? new Coordonnee(coordDepart.getX(), 
+                                         coordDepart.getY() + taille-1) :
+                          new Coordonnee(coordDepart.getX() + taille-1,
+                                         coordDepart.getY());
+    }
+    
+    /**
+     * Construit un bateau avec une taille (this) et une coordonnée de départ et 
+     * une direction
+     * @param coordDepart coordonnée de départ du bateau
+     * @param indice indice du bateau dans la collection de flotte
+     * @param vertical direction du bateau
+     * @param zoneContenant zone contenant le bateau à construire
+     * @return un bateau 
+     */
+    public Bateau constuireBateau(Coordonnee coordDepart, int indice,
+                                  boolean vertical, Zone zoneContenant) {
+        
+        Coordonnee coordArrivee; // coordonnée d'arrivé du bateau
+        coordArrivee = calculCoordArrivee(coordDepart, tailleBateau, vertical);
+        
+        
+        
+        if (vertical) {
+            setTailleHorizontale(tailleBateau);
+            setTailleVerticale(1);
+        } else {
+            setTailleHorizontale(1);
+            setTailleHorizontale(tailleBateau);
+        }
+        
+        return new Bateau(coordDepart, coordArrivee, indice, zoneContenant);
+    }
+
+    /**
+     * Vérifie si on peut placer un bateau avec les paramètres donnés
+     * @param coordDepart coordonnée de départ du bateau à tester (this)
+     * @param indice indice du bateau dans la collection de flotte
+     * @param vertical direction du bateau
+     * @param zoneOuPlacer zone où placer le bateau
+     * @return vrai si le placement est possible
+     */
+    public boolean placerBateau(Coordonnee coordDepart, int indice, 
+                                boolean vertical, Zone zoneOuPlacer) {
+        
+        Zone bateauAPlacer;
+        Coordonnee coordArrivee;
+        
+        /* vérification si le bateau n'est pas hors zone */
+        if (Zone.tailleDefaut <= tailleBateau + coordDepart.getX() ||
+            Zone.tailleDefaut <= tailleBateau + coordDepart.getY()) {
+            return false;
+        }
+        
+        coordArrivee = calculCoordArrivee(coordDepart, tailleBateau, vertical);
+        bateauAPlacer = new Zone(coordDepart, coordArrivee);
+        
+        /* verification si le bateau ne touche pas un autre bateau */
+        for (Zone zoneBateau : zoneOuPlacer.getZoneContenu()) {
+            if (bateauAPlacer.collision(zoneBateau)) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }
