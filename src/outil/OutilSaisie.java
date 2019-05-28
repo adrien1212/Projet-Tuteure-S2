@@ -88,7 +88,7 @@ public class OutilSaisie {
         
         resultat = ' ';
         do {
-            System.out.println("Saisir la réponse (plouf(p), touché(t), coulé(c)) : ");
+            System.out.print(" : saisir la réponse (plouf(p), touché(t), coulé(c)) : ");
             reponse = (entree.next() + entree.nextLine()).toUpperCase();
             
             ok = true;

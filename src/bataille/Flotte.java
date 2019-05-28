@@ -7,8 +7,8 @@ package bataille;
 import java.util.ArrayList;
 
 /**
- * TODO commenter les responsabilités de cette classe
- * @author Adrien
+ * Une flotte contient plusieurs bateaux
+ * @author Groupe Projet
  *
  */
 
@@ -97,8 +97,8 @@ public class Flotte {
      * @return vrai si le placement est possible
      */
     public boolean placementBateauAlea(Zone zoneOuPlacer) {
-        int BOUCLAGE_MAX = 100000; // nombre de bouclage maximal
-        int NB_ESSAI = 1000;      // nombre d'essai maximal
+        int BOUCLAGE_MAX = 1000000; // nombre de bouclage maximal
+        int NB_ESSAI = 100;      // nombre d'essai maximal
         int essai;                // nombre d'essai de placement
         
         /* Coordonnees nonJouable */
@@ -179,6 +179,17 @@ public class Flotte {
         
         zoneOuPlacer.ajouterFlotte(this);
         return true;
+    }
+    
+    /**
+     * Affiche les bateaux dans la flotte
+     */
+    public void afficherFlotte() {
+        System.out.println();
+        for (Bateau bateau : collectionBateau) {
+            System.out.println(bateau);
+        }
+        System.out.println();
     }
 }
 

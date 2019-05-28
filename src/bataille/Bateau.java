@@ -98,9 +98,7 @@ public class Bateau extends Zone {
      */
     @Override
     public String toString() {
-        return "Bateau [tailleBateau = " + tailleBateau
-             + ", zoneBateau = " + getZoneCoord()
-             + ", zoneAbordage = " + getZoneContenu() + "]";
+        return "Taille du bateau : " + tailleBateau;
     }
 
     
@@ -244,14 +242,17 @@ public class Bateau extends Zone {
         int indice; // indice des coordonnées dans la zoneCoord du bateau
         
         for (indice = 0; indice < this.getZoneCoord().size() 
-                      && this.getZoneCoord().get(indice).isTouche(); 
-             indice++);
-        
-        if (indice == this.getZoneCoord().size()) {
-            this.setCoule(true);
-            return true;
+        		&& this.getZoneCoord().get(indice).isTouche(); 
+        		indice++) {
+        	
         }
-        
+
+        if (indice == this.getZoneCoord().size()) {
+        	this.setCoule(true);
+
+        	return true;
+        }
+
         return false;
     }
 }

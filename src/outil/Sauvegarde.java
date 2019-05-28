@@ -35,12 +35,19 @@ import bataille.Flotte;
  *
  */
 public class Sauvegarde {
-
+    
+    /** Informations sur la taille de la zone de jeu */
+    public static ArrayList<Integer> tailleZoneJeu = new ArrayList<Integer>();
+    
+    /** Flotte contenant tous les bateaux */
+    public static Flotte laFlotte = new Flotte();
+    
+    
     /**
-     * Créer une sauvegarde de la zone, la flotte, et les coups joués
-     * @param zone zone à sauvegarder
-     * @param flotte flotte à sauvegarder
-     * @param coupJoue coup joué à sauvegarder
+     * Sauvegarde d'une partie
+     * @param zone
+     * @param flotte
+     * @param coupJoue
      */
     public static void creerSauvegarde(Zone zone, Flotte flotte, 
                                        ArrayList<Coordonnee> coupJoue) {
@@ -55,9 +62,25 @@ public class Sauvegarde {
             Element racine = document.createElement("Bataille");
             document.appendChild(racine);
             
+            /* création de l'élément zone de jeu */
+            Element eZoneJeu = document.createElement("ZoneJeu");
+            racine.appendChild(eZoneJeu);
+            
+            /* création de l'élément tailleHorizontale */
+            Element eTailleHorizontale = document.createElement("tailleHorizontale");
+            eTailleHorizontale.appendChild(document.createTextNode("" + zone.getTailleHorizontale()));
+            eZoneJeu.appendChild(eTailleHorizontale);
+            
+            /* création de l'élément taileVerticale */
+            Element eTailleVerticale = document.createElement("tailleVerticale");
+            eTailleVerticale.appendChild(document.createTextNode("" + zone.getTailleVerticale()));
+            eZoneJeu.appendChild(eTailleVerticale);
+            
+            
+            
             
             /* création de l'élément zone */
-            Element eZone = document.createElement("zone");
+            Element eZone = document.createElement("CasesUtiles");
             racine.appendChild(eZone);
             
             for (Coordonnee caseASauver : zone.getZoneCoord()) {
@@ -75,15 +98,10 @@ public class Sauvegarde {
                 eY.appendChild(document.createTextNode("" + caseASauver.getY()));
                 eCase.appendChild(eY);
                 
-                /* création de l'élément indice bateau */
-                Element eIndice = document.createElement("indiceBateau");
-                eIndice.appendChild(document.createTextNode("" + caseASauver.getIndiceBateau()));
-                eCase.appendChild(eIndice);
-                
-                /* création de l'élément touché */
-                Element eTouche = document.createElement("touche");
-                eTouche.appendChild(document.createTextNode("" + caseASauver.isTouche()));
-                eCase.appendChild(eTouche);
+//                /* création de l'élément touché */
+//                Element eTouche = document.createElement("touche");
+//                eTouche.appendChild(document.createTextNode("" + caseASauver.isTouche()));
+//                eCase.appendChild(eTouche);
                 
                 /* création de l'élément coulé */
                 Element eCoule = document.createElement("coule");
@@ -103,16 +121,27 @@ public class Sauvegarde {
                 eFlotte.appendChild(eBateau);
                 
                 /* création de l'élément caseDepart */
-                Element eCase = document.createElement("coordDepart");
-                eCase.appendChild(document.createTextNode("" 
-                                                     + bateau.getCoordDepart()));
-                eBateau.appendChild(eCase);
+                Element eCaseX = document.createElement("coordDepartX");
+                eCaseX.appendChild(document.createTextNode("" 
+                                                     + bateau.getCoordDepart().getX()));
+                eBateau.appendChild(eCaseX);
                 
-                //* création de l'élément caseDepart */
-                Element eCase2 = document.createElement("coordArrivee");
-                eCase2.appendChild(document.createTextNode("" 
-                                                     + bateau.getCoordArrivee()));
-                eBateau.appendChild(eCase2);
+                Element eCaseY = document.createElement("coordDepartX");
+                eCaseY.appendChild(document.createTextNode("" 
+                                                     + bateau.getCoordDepart().getY()));
+                eBateau.appendChild(eCaseY);
+                
+                
+                /* création de l'élément caseArrivee */
+                Element eCase2X = document.createElement("coordArriveeX");
+                eCase2X.appendChild(document.createTextNode("" 
+                                                     + bateau.getCoordArrivee().getX()));
+                eBateau.appendChild(eCase2X);
+                
+                Element eCase2Y = document.createElement("coordArriveeY");
+                eCase2Y.appendChild(document.createTextNode("" 
+                                                     + bateau.getCoordArrivee().getY()));
+                eBateau.appendChild(eCase2Y);
                 
                 
                 /* création de l'élément coulé */
@@ -120,6 +149,7 @@ public class Sauvegarde {
                 eCoule.appendChild(document.createTextNode("" 
                                                            + bateau.isCoule()));
                 eBateau.appendChild(eCoule);
+                
             }
             
             
@@ -143,6 +173,7 @@ public class Sauvegarde {
                 Transformer transformer = transFact.newTransformer();
                 DOMSource source = new DOMSource(racine);
                 StreamResult result = new StreamResult(new File("sauvegarde.xml"));
+                System.out.println("Sauvegarde effectuée");
                 transformer.transform(source, result);
             } catch (TransformerConfigurationException e) {
                 // TODO Auto-generated catch block
@@ -157,103 +188,111 @@ public class Sauvegarde {
         }
     }
     
-    /**
-     * Lit la sauvegarde et restaure les données
-     */
-//    public static void lireSauvegarde() {
-//        
-//        Node nodeCase;
-//        Coordonnee caseALire; // case a lire et à restaurer
-//        /* tableau contenant les cases à lire */
-//        Coordonnee[] tabCases = new Coordonnee[Zone.tailleDefaut * Zone.tailleDefaut];
-//        
-//        try {
-//            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//            DocumentBuilder docBuilder = factory.newDocumentBuilder();
-//            Document document = docBuilder.parse(new File("sauvegarde.xml"));
-//            
-//            /* récupération élément racine */
-//            Element racine = document.getDocumentElement();
-//            
-//            /* récupération de la racine */
-//            NodeList racineNoeuds = racine.getChildNodes();
-//            
-//            /* récupération des éléments de la sauvegarde */
-//            Element eZone = (Element) racineNoeuds.item(0);
-//            Element eFlotte = (Element) racineNoeuds.item(1);
-//            Element eCoup = (Element) racineNoeuds.item(2);
-//            
-//            
-//            /* remplissage du tableau case */
-//            NodeList nodeZone = eZone.getChildNodes();
-//            for (int indice = 0; indice < tabCases.length; indice++) {
-//                nodeCase = nodeZone.item(indice);
-//                System.out.println(nodeCase.getTextContent());
-//                //caseALire = new Case(nodeCase., y, indiceBateau, estTouche, coule);
-//                //tabCases[indice] = caseALire;
-//            }
-//            
-//        } catch (ParserConfigurationException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (SAXException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//    }
     
+    /**
+     * Lecture du fichier de sauvegarde
+     */
     public static void lire() {
+
+
         try {
 
-            File fXmlFile = new File("D:\\Utilisateur\\MrAdrien\\Desktop\\WorkSpace\\workSpacePOO\\bn\\sauvegarde.xml");
+            File fXmlFile = new File("sauvegarde.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
-                            
-            //optional, but recommended
-            //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
+
+
             doc.getDocumentElement().normalize();
 
-            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-                            
-            NodeList nList = doc.getElementsByTagName("staff");
-                            
+            System.out.println("Element racine :" + doc.getDocumentElement().getNodeName());
+
+            NodeList nList = doc.getElementsByTagName("Bataille");
+
             System.out.println("----------------------------");
 
             for (int temp = 0; temp < nList.getLength(); temp++) {
 
-                    Node nNode = nList.item(temp);
-                                    
-                    System.out.println("\nCurrent Element :" + nNode.getNodeName());
-                                    
-                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                Node nNode = nList.item(temp);
 
-                            Element eElement = (Element) nNode;
+                System.out.println("\nElement courant :" + nNode.getNodeName());
 
-                            System.out.println("Staff id : " + eElement.getAttribute("zone"));
-                            System.out.println("First Name : " + eElement.getElementsByTagName("coorDepart").item(0).getTextContent());
-                            System.out.println("Last Name : " + eElement.getElementsByTagName("coule").item(0).getTextContent());
-                            System.out.println("Nick Name : " + eElement.getElementsByTagName("coup").item(0).getTextContent());
-                            System.out.println("Salary : " + eElement.getElementsByTagName("salary").item(0).getTextContent());
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                    Element eElement = (Element) nNode;
+
+                    System.out.println("Zone : " + eElement.getAttribute("zone"));
+
+
+                    /* Récupération des données de la zone de jeu */
+                    System.out.println("*** Récupérations de la zone de jeu ***");
+                    NodeList zoneDeJeu = doc.getElementsByTagName("ZoneJeu");
+                    for (int i = 0; i < zoneDeJeu.getLength(); i++) {
+                        //Element taille = (Element) zoneDeJeu.item(i);
+                        System.out.println("tailleHorizontale : " + eElement.getElementsByTagName("tailleHorizontale").item(i).getTextContent());
+                        System.out.println("tailleVerticale : " + eElement.getElementsByTagName("tailleVerticale").item(i).getTextContent());
+
+                        tailleZoneJeu.add(Integer.parseInt(eElement.getElementsByTagName("tailleHorizontale").item(i).getTextContent()));
+                        tailleZoneJeu.add(Integer.parseInt(eElement.getElementsByTagName("tailleVerticale").item(i).getTextContent()));
 
                     }
+
+                    Zone zoneJeu = new Zone(new Coordonnee(0, 0), tailleZoneJeu.get(0), tailleZoneJeu.get(1));
+
+                    System.out.println();
+
+
+                    /* Récupération des données des bateaux */
+                    int x, y, x2, y2;
+                    System.out.println("*** Récupérations de la flotte ***");
+                    NodeList flotte = doc.getElementsByTagName("bateau");
+                    for (int i = 0; i < flotte.getLength(); i++) {
+                        //Element bateau = (Element) flotte.item(i);
+                        System.out.println("Bateau n° " +i);
+                        System.out.println("coordDepart : " + eElement.getElementsByTagName("coordDepartX").item(i).getTextContent() + " "
+                                + eElement.getElementsByTagName("coordDepartY").item(i).getTextContent());
+                        System.out.println("coordArrivees : " + eElement.getElementsByTagName("coordArriveeX").item(i).getTextContent() + " "
+                                + eElement.getElementsByTagName("coordArriveeX").item(i).getTextContent());
+                        System.out.println("estCoule : " + eElement.getElementsByTagName("coule").item(i).getTextContent());
+
+                        /* Informations sur les bateaux */
+                        x = Integer.parseInt(eElement.getElementsByTagName("coordDepartX").item(i).getTextContent());
+                        y = Integer.parseInt(eElement.getElementsByTagName("coordDepartY").item(i).getTextContent()); 
+                        x2 = Integer.parseInt(eElement.getElementsByTagName("coordArriveeX").item(i).getTextContent());
+                        y2 = Integer.parseInt(eElement.getElementsByTagName("coordArriveeY").item(i).getTextContent());
+
+                        Bateau aConstruire = new Bateau(new Coordonnee(x,y), new Coordonnee(x2, y2), i, zoneJeu);
+
+                        laFlotte.ajouterBateau(aConstruire);
+                    }
+                    
+                    System.out.println();
+
+
+                    /* Récupération des données des coups */
+                    System.out.println("*** Récupérations des coups ***");
+                    NodeList coups = doc.getElementsByTagName("case");
+                    for (int i = 0; i < coups.getLength(); i++) {
+                        //Element coordonnee = (Element) coups.item(i);
+                        System.out.println("case : " + eElement.getElementsByTagName("case").item(i).getTextContent());
+                    }
+
+
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-      }
+    }
 
-    
+
 
     /**
-     * TODO commenter le rôle de cette méthode
-     * e
      * @param args
      */
     public static void main(String args[] ) {
+        
+        /* Bouchon */
         Zone zoneDepart = new Zone();
         Coordonnee caseDepart = new Coordonnee(0,0);
         
@@ -272,9 +311,11 @@ public class Sauvegarde {
         test.add(caseDepart);
         
         
-       //creerSauvegarde(zoneDepart, flotte, test);
-       lire();
+       creerSauvegarde(zoneDepart, flotte, test);
+       //lire();
        
+       System.out.println(tailleZoneJeu.toString());
+       System.out.println(laFlotte.toString());
        
         
         

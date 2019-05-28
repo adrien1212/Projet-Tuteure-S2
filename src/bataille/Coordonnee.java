@@ -150,14 +150,19 @@ public class Coordonnee {
         return "(" + x + "," + y + ")";
     } 
     
-//    /**
-//     * TODO commenter le rôle de cette méthode
-//     * @return la coordonnée convertit en format A1
-//     */
-//    public String convertit() {
-//        (this.getX() + 'A'); 
-//        (this.getY() + 1);
-//    }
+    /**
+     * TODO commenter le rôle de cette méthode
+     * @return la coordonnée convertit en format A1
+     */
+    public String convertit() {
+        char x;
+        int y;
+        
+        x = (char) (this.getX() + 'A'); 
+        y = (this.getY() + 1);
+        
+        return "" + x + y;
+    }
     
     
     /**
@@ -193,7 +198,7 @@ public class Coordonnee {
      */
     public boolean dejaJoue(ArrayList<Coordonnee> coupJoue) {
         for (Coordonnee coup : coupJoue) {
-            if (this.getIndiceCoord() == coup.getIndiceBateau()) {
+            if (this.coordonneesEgales(coup)) {
                     return true;
             }
         }
@@ -206,19 +211,12 @@ public class Coordonnee {
     /**
      * Méthode renvoyant une arraylist avec tout les bateau coulé d'une arraylist
      * spécifique
-     * @param coupJoueJoueur1 designe l'arraylist à utiliser
+     * @param coupJouer arraylist des coups joué
      * @param flotte la flotte du jeux en cours
      * @return une arraylist des bateau coulés
      */
-    public ArrayList<Bateau> estCoule(boolean coupJoueJoueur1, Flotte flotte) {
+    public ArrayList<Bateau> estCoule(ArrayList<Coordonnee> coupJouer, Flotte flotte) {
         ArrayList<Bateau> bateauCoule = new ArrayList<Bateau>();
-        ArrayList<Coordonnee> coupJouer;
-        //on selectionne l'arrayList à selectionner
-        if (coupJoueJoueur1) {
-            coupJouer = Jeu.coupJoueur;
-        }else {
-            coupJouer = Jeu.coupOrdi;
-        }
         
         // on test tous les éléments
         // on compare les indice pour pas avoir 2 bateau identique
@@ -263,22 +261,15 @@ public class Coordonnee {
     /**
      * Méthode determinant si un coup est pertinant ou pas en fonction des 
      * coup déja joué et de la flotte selectionné pour la partie
-     * @param coupJoueJoueur1 
+     * @param coupDejaJoue arraylist des coups deja joué 
      * @param flotte 
      * @return si le coup est non pertinent ou pas
      */
-    public boolean coupNonPertinent(boolean coupJoueJoueur1, Flotte flotte) {
+    public boolean coupNonPertinent(ArrayList<Coordonnee> coupDejaJoue, Flotte flotte) {
     	boolean coupNonPertinent = false;
-    	ArrayList<Coordonnee> coupDejaJoue;
-    	ArrayList<Bateau> bateauCoule = estCoule( coupJoueJoueur1,flotte);
-    	if (coupJoueJoueur1) {
-            coupDejaJoue = Jeu.coupJoueur;
-        }else {
-            coupDejaJoue = Jeu.coupOrdi;
-        }
-    				
     	
-    	
+    	ArrayList<Bateau> bateauCoule = estCoule( coupDejaJoue,flotte);
+
     	int xCoup,
     	yCoup;
 
@@ -288,13 +279,15 @@ public class Coordonnee {
     	if (dejaJoue(coupDejaJoue)){
     		return true;
     	}
+    	
+    	//test d'un coup présent dans la zone d'antiabordage
 
-    	//test de jeux sur la zone d'abordage d'un bateau coulé
-    	for (int index=0 ; index< bateauCoule.size() ; index ++) {
-    		if (bateauCoule.get(index).getZoneContenu().get(0).collision(xCoup, yCoup)) {
-    			coupNonPertinent = true;
-    		}
-    	}
+//    	//test de jeux sur la zone d'abordage d'un bateau coulé
+//    	for (int index=0 ; index< bateauCoule.size() ; index ++) {
+//    		if (bateauCoule.get(index).getZoneContenu().get(0).collision(xCoup, yCoup)) {
+//    			coupNonPertinent = true;
+//    		}
+//    	}
 
     	//test sur les bateau non coulé contenant plus de 2 case touché (instable)
     	// non prise en charge dans un premier temps TODO : à compléter si possible

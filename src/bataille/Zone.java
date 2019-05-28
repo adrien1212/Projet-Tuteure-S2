@@ -18,7 +18,7 @@ public class Zone {
     public static final int TAILLE_MAX = 26;
     
     /** Taille de la zone de jeu par défaut TODO récupération auto */
-    public static int tailleDefaut = 10;
+    public static int tailleDefaut = 12;
     
     
 
@@ -30,15 +30,15 @@ public class Zone {
     
     /** Taille horizontale (axe x) de la zone de jeu  */
     private int tailleHorizontale;
-    
+
     /** Taille verticale (axe y) de la zone de jeu */
     private int tailleVerticale;
-    
+
     /** Collection contenant les coordonnées */
     private ArrayList<Coordonnee> zoneCoord;
-    
+
     /** Collection contenant les zones */
-   private ArrayList<Zone> zoneContenu;
+    private ArrayList<Zone> zoneContenu;
 
     
     
@@ -54,6 +54,7 @@ public class Zone {
         this.zoneContenu = new ArrayList<Zone>();
     }
     
+
     /**
      * Construit une zone avec une coordonnée d'arrivée 
      * @param coordDepart coordonnée où commence la zone
@@ -69,7 +70,27 @@ public class Zone {
         this.zoneContenu = new ArrayList<Zone>();
     }
     
+    /**
+     * @param coordDepart
+     * @param tailleHorizontale
+     * @param tailleVerticale
+     */
+    public Zone(Coordonnee coordDepart, int tailleHorizontale, int tailleVerticale) {
+        this.coordDepart = coordDepart;
+        this.tailleHorizontale = tailleHorizontale;
+        this.tailleVerticale = tailleVerticale;
+        this.zoneCoord = new ArrayList<Coordonnee>();
+        this.zoneContenu = new ArrayList<Zone>();
+    }
     
+    
+    /**
+     * TODO commenter le rôle de cette méthode
+     * @param taille
+     */
+    public static void setTailleDefaut(int taille) {
+        tailleDefaut = taille;
+    }
 
     /**
      * @return valeur de coordDepart
@@ -188,12 +209,12 @@ public class Zone {
                     zone.append('X');
                 } else if (aAfficher.isContientBateau() && aAfficher.isTouche()) {
                     zone.append('x');
-                } else if (aAfficher.isContientBateau()) {
+                }/* else if (aAfficher.isContientBateau()) {
                     zone.append('=');
-                } else if (aAfficher.isTouche()) {
+                }*/ else if (aAfficher.isTouche()) {
                     zone.append('o');
                 } else {
-                    zone.append("flûte alors");
+                    zone.append('.');
                 }
                 indiceCoords++;
             } else {
@@ -371,13 +392,19 @@ public class Zone {
      * Demande à l'utilisateur une coordonnée où tirer un coup et change l'etat
      * de la coordonnée touché
      * @param collecCoup collection des coup joués
+     * @param flotte la flotte des gens sur qui ont tire
      * @return l'indice du bateau touché, -1 si aucun
      */
-    public int coup(ArrayList<Coordonnee> collecCoup) {
+    public int coup(ArrayList<Coordonnee> collecCoup, Flotte flotte) {
         Coordonnee coup;
+        do {
+            /* demande de la coordonnée à l'utilisateur */
+            coup = OutilSaisie.saisieCoordonnee();
+            if (coup.coupNonPertinent(collecCoup, flotte)) {
+            	System.out.println("coup non pertinent veuillez réessayer ");
+            }
+        }while(coup.coupNonPertinent(collecCoup, flotte));
 
-        /* demande de la coordonnée à l'utilisateur */
-        coup = OutilSaisie.saisieCoordonnee();
 
         /* ajout à la collection de coupJoue */
         collecCoup.add(coup);
