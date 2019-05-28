@@ -134,7 +134,7 @@ public class testBateau {
         for (int i = 0; i < coordonneeDepart.length; i++) {
             Bateau bAPlacer = new Bateau(5);
             
-            if(bAPlacer.placerBateau(coordonneeDepart[i], verticale[i], 
+            if(bAPlacer.placerBateau(coordonneeDepart[i], i, verticale[i], 
                zoneJeu) != resultatsAttendus[i]) {
                 nbEchecsTest1++;
             }
@@ -173,7 +173,7 @@ public class testBateau {
         
         for (int i = 0; i < coordTest2Depart.length; i++) {
             Bateau bAPlacer2 = new Bateau(tailleBateau[i]);
-            System.out.println(bAPlacer2.placerBateau(coordTest2Depart[i], verticale2[i], zoneJeu));
+            System.out.println(bAPlacer2.placerBateau(coordTest2Depart[i], i, verticale2[i], zoneJeu));
             
             System.out.println(bAPlacer2.toString());
         }

@@ -38,7 +38,7 @@ public class Zone {
     private ArrayList<Coordonnee> zoneCoord;
     
     /** Collection contenant les zones */
-   private ArrayList<Zone> zoneContenu;
+    private ArrayList<Zone> zoneContenu;
 
     
     
@@ -230,7 +230,7 @@ public class Zone {
     /**
      * Ajoute des coordonnées dans la collection zoneCoord (de this)
      */
-    public void ajouterCoordonnee() {
+    private void ajouterCoordonnee() {
         int x; // abscisse de la coordonnée
         int y; // ordonnée de la coordonnée
         
@@ -250,8 +250,17 @@ public class Zone {
      * @param aAjouter bateau à ajouter à la zone (this)
      */
     public void ajouterCoordonnee(Bateau aAjouter) {
-        for (Coordonnee coordAAjouter : aAjouter.getZoneCoord()) {
-            zoneCoord.add(coordAAjouter);
+        int x; // abscisse de la coordonnée
+        int y; // ordonnée de la coordonnée
+        
+        y = aAjouter.getCoordDepart().getY();
+        for (int vertical = 0; vertical < aAjouter.getTailleVerticale(); vertical++) {
+            x = aAjouter.getCoordDepart().getX();
+            for (int horizontal = 0; horizontal < aAjouter.getTailleHorizontale(); horizontal++) {
+                zoneCoord.add(new Coordonnee(x, y, aAjouter.getIndiceBateau(), true));
+                x++;
+            }
+            y++;
         }
     }
     
@@ -272,25 +281,6 @@ public class Zone {
             zoneContenu.add(bateau);
             ajouterCoordonnee(bateau);
         }
-    }
-    
-    /**
-     * Retire la zone du bateau et ses coordonnées des collections de this
-     * @param indice indice du bateau à retirer
-     */
-    public void retirerBateau(int indice) {
-        Coordonnee coordAChanger; // coordonnée balayer dans la boucle
-        
-        /* retirer les coordonnées du bateau */
-        for (int i = 0; i < zoneCoord.size(); i++) {
-            coordAChanger = zoneCoord.get(i);
-            if (coordAChanger.getIndiceBateau() == indice) {
-                zoneCoord.remove(i);
-            }
-        }
-        
-        /* retire la zone du bateau */
-        this.getZoneContenu().remove(indice);
     }
     
     /**
@@ -345,48 +335,23 @@ public class Zone {
     }
     
     /**
-     * vérifie si une zone est un point ne sont pas en colision
-     * @param x
-     * @param y
-     * @return vrai si il y a une collision entre deux zone
+     * TODO commentaire
+     * @return vrai si un bateau est touché
      */
-    public boolean collision( int x, int y) { 
-        boolean test =false;  
-        ArrayList<Coordonnee> CollectionCaseZone = this.getZoneCoord(); //on charge tout les point de la zone
-        
-        for(int indexPointZone=0; indexPointZone<CollectionCaseZone.size(); 
-                indexPointZone++) {
-            
-            if (CollectionCaseZone.get(indexPointZone).getX()==x && 
-                    CollectionCaseZone.get(indexPointZone).getY()==y) {
-                test=true;
-            }
-        }
-        
-        
-        return test;
-    }
-    
-    /**
-     * Demande à l'utilisateur une coordonnée où tirer un coup et change l'etat
-     * de la coordonnée touché
-     * @param collecCoup collection des coup joués
-     * @return l'indice du bateau touché, -1 si aucun
-     */
-    public int coup(ArrayList<Coordonnee> collecCoup) {
+    public boolean coup() {
         Coordonnee coup;
-
+        
         /* demande de la coordonnée à l'utilisateur */
         coup = OutilSaisie.saisieCoordonnee();
-
+        
         /* ajout à la collection de coupJoue */
-        collecCoup.add(coup);
+        Jeu.coupJoue.add(coup);
         
         for (Coordonnee coordATester : this.zoneCoord) {
             /* si la coordonnée et déjà présente dans la collection */
             if (coup.coordonneesEgales(coordATester)) {
                 coordATester.setTouche(true);
-                return coordATester.getIndiceBateau();
+                return true;
             }
         }
         
@@ -394,6 +359,9 @@ public class Zone {
         coup.setTouche(true);
         this.zoneCoord.add(coup);
         
-        return -1;
+        /* ajout à la collection de coupJoue */
+        Jeu.coupJoue.add(coup);
+        
+        return false;
     }
 }

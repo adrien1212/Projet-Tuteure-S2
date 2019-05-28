@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import bataille.Bateau;
 import bataille.Coordonnee;
-import bataille.Flotte;
 import bataille.Zone;
 
 /**
@@ -22,36 +21,18 @@ public class testZone {
     /** Zone de jeu par default pour les tests */
     private static Zone zoneJeu = new Zone();
     
-//    /** Coordonnées de zone de départ */
-//    private static  Coordonnee[] CoordonneeDepart =  {
-//            new Coordonnee(0, 0),
-//            new Coordonnee(-0, -0),
-//            new Coordonnee(3, 6),
-//            new Coordonnee(3, 8),
-//            new Coordonnee(1, 1),
-//            new Coordonnee(1, 1),
-//            new Coordonnee(0, 8),
-//            new Coordonnee(1, 9),
-//            new Coordonnee(2, 0),
-//            new Coordonnee(9,9)      // mettre taille defaut
-//    };
-    
-    /** Coordonnée de départ des bateaux*/
-    private static Coordonnee[] coordDepart = {
-            new Coordonnee(5, 8),
-            new Coordonnee(5, 3),
-            new Coordonnee(5, 3),
-            new Coordonnee(3, 3),
-            new Coordonnee(3, 3),
-    };
-    
-    /** Coordonnée d'arrive des bateaux */
-    private static Coordonnee[] coordArrive = {
-            new Coordonnee(7, 8),
-            new Coordonnee(5, 6),
-            new Coordonnee(5, 7),
-            new Coordonnee(6, 3),
-            new Coordonnee(3, 5),
+    /** Coordonnées de zone de départ */
+    private static  Coordonnee[] CoordonneeDepart =  {
+            new Coordonnee(0, 0),
+            new Coordonnee(-0, -0),
+            new Coordonnee(3, 6),
+            new Coordonnee(3, 8),
+            new Coordonnee(1, 1),
+            new Coordonnee(1, 1),
+            new Coordonnee(0, 8),
+            new Coordonnee(1, 9),
+            new Coordonnee(2, 0),
+            new Coordonnee(9,9)      // mettre taille defaut
     };
     
     /** Bateaux */
@@ -240,7 +221,6 @@ public class testZone {
         zoneJeu.ajouterCoordonnee(bateauPlace); // ajout du bateau sur la zone de jeu
 
 
-        System.out.println("*** Test collision ***");
         nbEchecs = 0;
         /* On regarde si les nouveaux bateaux touchent le bateau déjà placé*/
         for (int i = 0; i < coordDepart.length; i++) {
@@ -248,7 +228,6 @@ public class testZone {
             
             if (bAPlacer2.collision(bateauPlace) != resultatAttendu[i]) {
                 nbEchecs++;
-                System.out.println("Erreur test " + i);
             }
         }
         System.out.println("Nombre d'echecs de Collision : " + nbEchecs);
@@ -256,82 +235,6 @@ public class testZone {
     }
     
     
-    /**
-     * Test unitaire de la méthode AjouterCoordonnee
-     */
-    public static void testAjouterCoordonnee() {
-        
-        System.out.println("*** Test ajouterCoordonnee ***");
-        for (int i = 0; i < coordDepart.length; i++) {
-            Zone zoneDeCoordonnees = new Zone(coordDepart[i], coordArrive[i]); 
-            zoneDeCoordonnees.ajouterCoordonnee();
-            System.out.println(zoneDeCoordonnees.getZoneCoord().toString());
-        }
-        
-    }
-    
-    /**
-     * Test unitaire de la méthode AjouterCoordonnee(Bateau)
-     */
-    public static void testAjouterCoordonneeBateau() {
-        Zone zoneOuAjouter = new Zone();
-        
-        System.out.println("*** Test ajouterCoordonnee(Bateau) ***");
-        for (int i = 0; i < coordDepart.length; i++) {
-            Bateau aAjouter = new Bateau(coordDepart[i], coordArrive[i], i, zoneJeu); 
-            zoneOuAjouter.ajouterCoordonnee(aAjouter);
-            System.out.println(zoneOuAjouter.getZoneCoord().toString());
-        }
-        
-    }
-    
-    /**
-     * Test unitaire de la méthode TrierCoolectionCoord
-     */
-    public static void testTrierCollectionCoord() {
-        ArrayList<Coordonnee> ajoutCoordonnee = new ArrayList<Coordonnee>();
-
-        System.out.println("*** Test trierCollectionCoord");
-        for (int i = 0; i < coordDepart.length; i++) {
-            ajoutCoordonnee.add(coordDepart[i]);
-            ajoutCoordonnee.add(coordArrive[i]);
-        }
-        Zone.trierCollecCoord(ajoutCoordonnee);
-        System.out.println(ajoutCoordonnee.toString());
-    }
-    
-    /**
-     * Test unitaire de la méthode AjouterZone
-     */
-    public static void testAjouterZone() {
-        Zone zoneOuAjouter = new Zone();
-        
-        System.out.println("*** Test ajouterZone ***");
-        for (int i = 0; i < coordDepart.length; i++) {
-            Zone aAjouter = new Zone(coordDepart[i], coordArrive[i]);
-            zoneOuAjouter.ajouterZone(aAjouter);
-        }
-        System.out.println(zoneOuAjouter.getZoneContenu().toString());
-    }
-    
-    /**
-     * Test unitaire de la méthode AjouterFlotte
-     */
-    public static void testAjouterFlotte() {
-        Zone zoneOuAjouter = new Zone();
-        
-        Flotte maFlotte = new Flotte();
-        
-        System.out.println("*** Test ajouterFlotte ***");
-        for (int i = 0; i < coordDepart.length; i++) {
-            Bateau aAjouter = new Bateau(coordDepart[i], coordArrive[i], i, zoneJeu);
-            maFlotte.ajouterBateau(aAjouter);
-        }
-        zoneOuAjouter.ajouterFlotte(maFlotte);
-        System.out.println(zoneOuAjouter.getZoneContenu().toString());
-    }
-    
-
     
     /**
      * Lancement des tests
@@ -344,11 +247,6 @@ public class testZone {
         //testAjouterCoordonnee();
         //testGetZoneCoord();
         testCollision();
-        testAjouterZone();
-        testAjouterFlotte();
-        testAjouterCoordonnee();
-        testAjouterCoordonneeBateau();
-        testTrierCollectionCoord();
     }
 
 }

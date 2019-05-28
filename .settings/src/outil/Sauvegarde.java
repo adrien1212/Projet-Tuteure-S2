@@ -18,6 +18,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -157,15 +158,15 @@ public class Sauvegarde {
         }
     }
     
-    /**
-     * Lit la sauvegarde et restaure les données
-     */
+//    /**
+//     * Lit la sauvegarde et restaure les données
+//     */
 //    public static void lireSauvegarde() {
 //        
 //        Node nodeCase;
 //        Coordonnee caseALire; // case a lire et à restaurer
 //        /* tableau contenant les cases à lire */
-//        Coordonnee[] tabCases = new Coordonnee[Zone.tailleDefaut * Zone.tailleDefaut];
+//        Coordonnee[] tabCases = new Coordonnee[Zone.LONGUEUR * Zone.LARGEUR];
 //        
 //        try {
 //            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -204,49 +205,6 @@ public class Sauvegarde {
 //            e.printStackTrace();
 //        }
 //    }
-    
-    public static void lire() {
-        try {
-
-            File fXmlFile = new File("D:\\Utilisateur\\MrAdrien\\Desktop\\WorkSpace\\workSpacePOO\\bn\\sauvegarde.xml");
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(fXmlFile);
-                            
-            //optional, but recommended
-            //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
-            doc.getDocumentElement().normalize();
-
-            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-                            
-            NodeList nList = doc.getElementsByTagName("staff");
-                            
-            System.out.println("----------------------------");
-
-            for (int temp = 0; temp < nList.getLength(); temp++) {
-
-                    Node nNode = nList.item(temp);
-                                    
-                    System.out.println("\nCurrent Element :" + nNode.getNodeName());
-                                    
-                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-                            Element eElement = (Element) nNode;
-
-                            System.out.println("Staff id : " + eElement.getAttribute("zone"));
-                            System.out.println("First Name : " + eElement.getElementsByTagName("coorDepart").item(0).getTextContent());
-                            System.out.println("Last Name : " + eElement.getElementsByTagName("coule").item(0).getTextContent());
-                            System.out.println("Nick Name : " + eElement.getElementsByTagName("coup").item(0).getTextContent());
-                            System.out.println("Salary : " + eElement.getElementsByTagName("salary").item(0).getTextContent());
-
-                    }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-      }
-
-    
 
     /**
      * TODO commenter le rôle de cette méthode
@@ -266,16 +224,20 @@ public class Sauvegarde {
         flotte.ajouterBateau(b2);
         flotte.ajouterBateau(b3);
         
+//        zoneDepart.ajouterCoordonnee(b1);
+//        zoneDepart.ajouterCoordonnee(b2);
+//        zoneDepart.ajouterCoordonnee(b2);
+
+        System.out.println(b1.getZoneCoord().toString());
+        
         ArrayList<Coordonnee> test = new ArrayList<Coordonnee>();
                
         test.add(caseDepart);
         test.add(caseDepart);
         
         
-       //creerSauvegarde(zoneDepart, flotte, test);
-       lire();
-       
-       
+       creerSauvegarde(zoneDepart, flotte, test);
+//       //lireSauvegarde();
         
         
 

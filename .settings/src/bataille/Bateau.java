@@ -35,10 +35,11 @@ public class Bateau extends Zone {
         this.tailleBateau = getTailleHorizontale() == 1 ? getTailleVerticale() :
                                                           getTailleHorizontale();
         this.indiceBateau = indiceBateau;
-        /* ajout de la zone d'abordage à la collection de zone du bateau */
+        /* ajout de la zone d'abordage à la zone du bateau */
         this.getZoneContenu().add(this.creerZoneAbordage(zoneContenant));
-        this.estBateau();
     }
+   
+    
 
     /**
      * Construit un bateau pour le stockage de la taille
@@ -65,16 +66,6 @@ public class Bateau extends Zone {
     }
 
     /**
-     * @param indiceBateau nouvelle valeur de indiceBateau
-     */
-    public void setIndiceBateau(int indiceBateau) {
-        this.indiceBateau = indiceBateau;
-        for (Coordonnee coordAChanger : this.getZoneCoord()) {
-            coordAChanger.setIndiceBateau(indiceBateau);
-        }
-    }
-
-    /**
      * @return valeur de coule
      */
     public boolean isCoule() {
@@ -86,9 +77,6 @@ public class Bateau extends Zone {
      */
     public void setCoule(boolean coule) {
         this.coule = coule;
-        for (Coordonnee coordAChanger : this.getZoneCoord()) {
-            coordAChanger.setBateauCoule(coule);
-        }
     }
 
 
@@ -162,16 +150,6 @@ public class Bateau extends Zone {
     }
     
     /**
-     * Change l'état des coordonnées du bateau this pour en faire un bateau
-     */
-    public void estBateau() {
-        for (Coordonnee coordAChanger : this.getZoneCoord()) {
-            coordAChanger.setIndiceBateau(this.getIndiceBateau());
-            coordAChanger.setContientBateau(true);
-        }
-    }
-    
-    /**
      * Construit un bateau avec une taille (this) et une coordonnée de départ et 
      * une direction
      * @param coordDepart coordonnée de départ du bateau
@@ -200,12 +178,13 @@ public class Bateau extends Zone {
     /**
      * Vérifie si on peut placer un bateau avec les paramètres donnés
      * @param coordDepart coordonnée de départ du bateau à tester (this)
+     * @param indice indice du bateau dans la collection de flotte
      * @param vertical direction du bateau
      * @param zoneOuPlacer zone où placer le bateau
      * @return vrai si le placement est possible
      */
-    public boolean placerBateau(Coordonnee coordDepart, boolean vertical, 
-                                Zone zoneOuPlacer) {
+    public boolean placerBateau(Coordonnee coordDepart, int indice, 
+                                boolean vertical, Zone zoneOuPlacer) {
         
         Bateau bateauAPlacer;    // bateau a placer sur la zone
         Coordonnee coordArrivee; // coordonnée d'arriver du bateau
@@ -213,13 +192,18 @@ public class Bateau extends Zone {
         ArrayList<Zone> collecZone; // collection de zone de zoneOuPlacer
         Zone zoneBateau;            // zone à l'indice i de collecZone
         
+        /* vérification si le bateau n'est pas hors zone */
+        if (Zone.tailleDefaut <= tailleBateau + coordDepart.getX() ||
+            Zone.tailleDefaut <= tailleBateau + coordDepart.getY()) {
+            return false;
+        }
+        
         coordArrivee = calculCoordArrivee(coordDepart, tailleBateau, vertical);
         bateauAPlacer = new Bateau(coordDepart, coordArrivee, 0, zoneOuPlacer);
+        zoneOuPlacer.ajouterZone(bateauAPlacer);
         
+        /* si il n'y a que cette zone dans la zoneOuPlacer */
         collecZone = zoneOuPlacer.getZoneContenu();
-        collecZone.add(bateauAPlacer);
-        
-        /* si il n'y a que cette zone dans zoneOuPlacer */
         if (collecZone.size() == 1) {
             return true;
         }
@@ -234,24 +218,5 @@ public class Bateau extends Zone {
         }
         
         return true;
-    }
-    
-    /**
-     * Vérifie si le bateau (this) est coulé
-     * @return vrai si le bateau est coulé
-     */
-    public boolean bateauCoule() {
-        int indice; // indice des coordonnées dans la zoneCoord du bateau
-        
-        for (indice = 0; indice < this.getZoneCoord().size() 
-                      && this.getZoneCoord().get(indice).isTouche(); 
-             indice++);
-        
-        if (indice == this.getZoneCoord().size()) {
-            this.setCoule(true);
-            return true;
-        }
-        
-        return false;
     }
 }

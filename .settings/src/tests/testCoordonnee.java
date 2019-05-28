@@ -7,7 +7,7 @@ package tests;
 import bataille.Coordonnee;
 
 /**
- * Classe test de Coordonnee
+ * Classe test de coordonnee
  * @author MZ
  *
  */

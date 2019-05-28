@@ -4,10 +4,8 @@
  */
 package bataille;
 
-import java.util.ArrayList;
-
 /**
- * Une coordonnée est définie par sa position en abscisse et en ordonnée
+ * TODO commenter les responsabilités de cette classe
  * @author Groupe projet
  */
 public class Coordonnee {
@@ -44,7 +42,6 @@ public class Coordonnee {
         this.x = x;
         this.y = y;
         this.indiceCoord = y * Zone.tailleDefaut + x;
-        this.indiceBateau = -1;
     }
 
     /**
@@ -135,29 +132,16 @@ public class Coordonnee {
         return indiceBateau;
     }
 
-    /**
-     * @param indiceBateau nouvelle valeur de indiceBateau
-     */
-    public void setIndiceBateau(int indiceBateau) {
-        this.indiceBateau = indiceBateau;
-    }
-    
+
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
         return "(" + x + "," + y + ")";
-    } 
+    }
     
-//    /**
-//     * TODO commenter le rôle de cette méthode
-//     * @return la coordonnée convertit en format A1
-//     */
-//    public String convertit() {
-//        (this.getX() + 'A'); 
-//        (this.getY() + 1);
-//    }
     
     
     /**
@@ -188,118 +172,15 @@ public class Coordonnee {
     
     /**
      * Determine si un coup à déjà été joué à partir de la liste des coups
-     * @param coupJoue collection contenant les coups joué
      * @return vrai si le coup à déjà était joué
      */
-    public boolean dejaJoue(ArrayList<Coordonnee> coupJoue) {
-        for (Coordonnee coup : coupJoue) {
-            if (this.getIndiceCoord() == coup.getIndiceBateau()) {
+    public boolean estDejaJoue() {
+        for (Coordonnee coup : Jeu.coupJoue) {
+            if (this.getX() == coup.getX() && this.getY() == coup.getY()) {
                     return true;
             }
         }
 
         return false;
     }
-    
-  
-    
-    /**
-     * Méthode renvoyant une arraylist avec tout les bateau coulé d'une arraylist
-     * spécifique
-     * @param coupJoueJoueur1 designe l'arraylist à utiliser
-     * @param flotte la flotte du jeux en cours
-     * @return une arraylist des bateau coulés
-     */
-    public ArrayList<Bateau> estCoule(boolean coupJoueJoueur1, Flotte flotte) {
-        ArrayList<Bateau> bateauCoule = new ArrayList<Bateau>();
-        ArrayList<Coordonnee> coupJouer;
-        //on selectionne l'arrayList à selectionner
-        if (coupJoueJoueur1) {
-            coupJouer = Jeu.coupJoueur;
-        }else {
-            coupJouer = Jeu.coupOrdi;
-        }
-        
-        // on test tous les éléments
-        // on compare les indice pour pas avoir 2 bateau identique
-        for (int index =0 ; index < coupJouer.size() ; index ++) {
-            if (coupJouer.get(index).isBateauCoule() && 
-                    !bateauCoule.contains(flotte.getCollectionBateau().get(
-                    coupJouer.get(index).getIndiceBateau()))) {
-                //on ajoute le bateau de la flotte correspondant à l'indice
-                bateauCoule.add(flotte.getCollectionBateau().get(
-                    coupJouer.get(index).getIndiceBateau()));
-            }
-        }
-        
-        return bateauCoule;
-    }
-    
-    
-    /**
-     * Determine si 2 coordonnée sont proches
-     * @param coordB coordonnée à comparer avec this  
-     * @return vrai si les coordonnées sont à cotés 
-     */
-    public boolean estProche(Coordonnee coordB) {
-        int indiceA; // indice de this
-        int indiceB; // indice de coordB
-            
-        /* récupération des indices */
-        indiceA = this.getIndiceCoord();
-        indiceB = coordB.getIndiceCoord();
-        
-        /* si la coordonnée est proche */
-        if (indiceA + 1 == indiceB || indiceA - 1 == indiceB
-         || indiceA - Zone.tailleDefaut == indiceB 
-         || indiceA + Zone.tailleDefaut == indiceB) {
-            return true;
-        }
-        
-        return false;
-    }
-    
-   
-    /**
-     * Méthode determinant si un coup est pertinant ou pas en fonction des 
-     * coup déja joué et de la flotte selectionné pour la partie
-     * @param coupJoueJoueur1 
-     * @param flotte 
-     * @return si le coup est non pertinent ou pas
-     */
-    public boolean coupNonPertinent(boolean coupJoueJoueur1, Flotte flotte) {
-    	boolean coupNonPertinent = false;
-    	ArrayList<Coordonnee> coupDejaJoue;
-    	ArrayList<Bateau> bateauCoule = estCoule( coupJoueJoueur1,flotte);
-    	if (coupJoueJoueur1) {
-            coupDejaJoue = Jeu.coupJoueur;
-        }else {
-            coupDejaJoue = Jeu.coupOrdi;
-        }
-    				
-    	
-    	
-    	int xCoup,
-    	yCoup;
-
-    	xCoup= this.getX();
-    	yCoup= this.getY();
-    	// test d'un coup déjà joué
-    	if (dejaJoue(coupDejaJoue)){
-    		return true;
-    	}
-
-    	//test de jeux sur la zone d'abordage d'un bateau coulé
-    	for (int index=0 ; index< bateauCoule.size() ; index ++) {
-    		if (bateauCoule.get(index).getZoneContenu().get(0).collision(xCoup, yCoup)) {
-    			coupNonPertinent = true;
-    		}
-    	}
-
-    	//test sur les bateau non coulé contenant plus de 2 case touché (instable)
-    	// non prise en charge dans un premier temps TODO : à compléter si possible
-
-    	return coupNonPertinent;
-    }
-    
 }

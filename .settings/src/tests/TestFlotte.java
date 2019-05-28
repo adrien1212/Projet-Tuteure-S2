@@ -16,12 +16,11 @@ import bataille.Zone;
  */
 public class TestFlotte {
 
-    /** Zone de jeu par défault */
+    /** TODO commenter le rôle du champ (attribut, rôle associatif...) */
     private static Zone zoneJeu = new Zone();
     
-    
     /**
-     * Tests unitaires de trierFlotte par ordre décroissant
+     * Tests unitaires de trierFlotte par ordre decroissant
      */
     public static void testTrierFlotte() {
         Coordonnee coordDepart = new Coordonnee(1, 1);
@@ -45,15 +44,27 @@ public class TestFlotte {
             System.out.println(bateau.toString());
         }
     }
-    
-    
-    
     /**
-     * Lancement des tests unitaires
+     * TODO commenter le rôle de cette méthode
      * @param args
      */
     public static void main(String[] args) {
-        testTrierFlotte();
+        //testTrierFlotte();
+        
+        Zone zoneJeu = new Zone();
+        Flotte marine = new Flotte();
+        
+        Bateau essai = new Bateau(2);
+        Bateau essai2 = new Bateau(3);
+        Bateau essai3 = new Bateau(1);
+        
+        marine.ajouterBateau(essai);
+        marine.ajouterBateau(essai2);
+        marine.ajouterBateau(essai3);
+        
+        marine.placementBateauAlea(zoneJeu);
+        
+        zoneJeu.afficherZone();
        
     }
 

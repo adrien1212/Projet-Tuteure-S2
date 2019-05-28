@@ -12,6 +12,7 @@ import bataille.Zone;
 
 /**
  * TODO commenter les responsabilités de cette classe
+ * 
  * @author Pc
  *
  */
@@ -78,43 +79,12 @@ public class OutilSaisie {
     }
     
     /**
-     * Demande à l'utilisateur de saisir la réponse suite à un coup
-     * @return le caractère signifiant la réponse (plouf, touché, coulé)
-     */
-    public static char saisieReponse() {
-        boolean ok;     // indicateur de saisie valide
-        String reponse; // réponse de l'utilisateur
-        char resultat;  // caractère à retourner
-        
-        resultat = ' ';
-        do {
-            System.out.println("Saisir la réponse (plouf(p), touché(t), coulé(c)) : ");
-            reponse = (entree.next() + entree.nextLine()).toUpperCase();
-            
-            ok = true;
-            if (Pattern.matches("(COULE)|(^C$)", reponse)) {
-                resultat = 'c';
-            } else if (Pattern.matches("(TOUCHE)|(^T$)", reponse)) {
-                resultat = 't';
-            } else if (Pattern.matches("(PLOUF)|(^P$)", reponse)) {
-                resultat = 'p';
-            } else {
-                System.out.println("Saisie invalide");
-                ok = false;
-            }
-            
-        } while (!ok);
-        
-        return resultat;
-    }
-    
-    /**
      * Demande à l'utilisateur une coordonnée sous la forme (A1)
      * @return une nouvelle case au coordonnées saisie
      */
     public static Coordonnee saisieCoordonnee() {
-        boolean ok;     // indicateur de saisie valide
-        String reponse; // réponse de l'utilisateur
+        boolean ok;
+        String reponse;
         
         int x,
             y;
@@ -122,7 +92,7 @@ public class OutilSaisie {
         x = y = -1;
         do {
             System.out.print("Saisir une coordonnée (ex : A1) : ");
-            reponse = entree.next() + entree.nextLine();
+            reponse = entree.nextLine();
             ok = Pattern.matches("[a-zA-Z]{1}[0-9]{1,2}", reponse);
             
             if (!ok) {
